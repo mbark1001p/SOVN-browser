@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOVN</title>
+<style>SOVN_CSS_PLACEHOLDER</style>
+</head>
+<body>
+
+<!-- ── PROFILE OVERLAY ───────────────────────── -->
+<div id="prof-ov">
+  <button class="pov-close" id="pov-close" data-icon="x" title="Close"></button>
+  <div class="pov-hd">
+    <div class="pov-logo">SOVN</div>
+    <div class="pov-sub">Who's browsing?</div>
+  </div>
+  <div id="prof-grid"></div>
+</div>
+
+<!-- ── CREATE / EDIT MODAL ──────────────────── -->
+<div id="cm">
+  <div class="cm-box">
+    <div id="cm-title">New Profile</div>
+    <div id="cm-av">?</div>
+    <input id="cm-inp" placeholder="Enter your name…" maxlength="22" autocomplete="off" spellcheck="false">
+    <div class="cm-row">
+      <button id="cm-save">Create</button>
+      <button id="cm-canc">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SPLASH ────────────────────────────────── -->
+<div id="splash">
+  <div class="sp-bg"></div>
+  <div class="sp-logo">SOVN</div>
+  <div class="sp-sub">Fast · Clean · Yours</div>
+  <div class="sp-line"></div>
+</div>
+
+<!-- ── PROGRESS BAR ──────────────────────────── -->
+<div id="prog"></div>
+
+<!-- ── TOOLBAR ───────────────────────────────── -->
+<div id="bar">
+  <span class="b-logo">SOVN</span>
+  <div class="b-sep"></div>
+  <button class="b-btn" id="btn-back"   data-icon="back"   title="Back (Alt+←)"></button>
+  <button class="b-btn" id="btn-fwd"    data-icon="fwd"    title="Forward (Alt+→)"></button>
+  <button class="b-btn" id="btn-reload" data-icon="reload" title="Reload (Ctrl+R)"></button>
+  <button class="b-btn b-home" id="btn-home" data-icon="home" title="Home (Ctrl+H)"></button>
+  <div class="b-sep"></div>
+  <div class="b-url-wrap">
+    <span class="b-secure" id="b-secure" data-icon="lock" title="Secure"></span>
+    <span class="b-ico" data-icon="search"></span>
+    <input class="b-url" id="uBar" placeholder="Search or enter address…" autocomplete="off" spellcheck="false">
+    <button class="b-clr" id="btn-clr" data-icon="x" title="Clear"></button>
+    <button class="b-go"  id="btn-go"  data-icon="go"></button>
+  </div>
+  <button class="b-btn b-star" id="btn-bm" data-icon="star" title="Bookmark (Ctrl+D)"></button>
+  <div id="upd-btn" title="Update available">
+    <div id="upd-dot"></div>
+    <span data-icon="update"></span>
+    <span id="upd-ver"></span>
+  </div>
+  <div class="b-sep"></div>
+  <button class="b-btn" id="btn-settings" data-icon="settings" title="Settings (Ctrl+,)"></button>
+  <button class="b-btn b-pbtn" id="profBtn" title="Switch Profile">
+    <div class="b-pmini" id="profMini">?</div>
+  </button>
+</div>
+
+<!-- ── SETTINGS PANEL ────────────────────────── -->
+<div id="sp">
+  <div class="sp-hd">
+    <span class="sp-hd-title">Settings</span>
+    <button class="b-btn" id="sp-close" data-icon="x"></button>
+  </div>
+  <div class="sp-body">
+
+    <!-- search engine -->
+    <div class="sp-sec">
+      <div class="sp-sec-lbl">Search Engine</div>
+      <div class="sp-engines" id="sp-engines">
+        <div class="se-opt" data-se="google">
+          <div class="se-ico" style="background:#fff;color:#4285f4">G</div>
+          <span>Google</span>
+        </div>
+        <div class="se-opt" data-se="bing">
+          <div class="se-ico" style="background:#0078d4;color:#fff">B</div>
+          <span>Bing</span>
+        </div>
+        <div class="se-opt" data-se="ddg">
+          <div class="se-ico" style="background:#de5833;color:#fff;font-size:15px">🦆</div>
+          <span>DuckDuckGo</span>
+        </div>
+        <div class="se-opt" data-se="brave">
+          <div class="se-ico" style="background:#fb542b;color:#fff;font-size:15px">🦁</div>
+          <span>Brave</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- bookmarks -->
+    <div class="sp-sec">
+      <div class="sp-sec-lbl">
+        Bookmarks
+        <span class="sp-badge" id="bm-cnt">0</span>
+        <button class="sp-sec-act sp-danger" id="sp-clr-bm">Clear</button>
+      </div>
+      <div id="sp-bm" class="sp-list"></div>
+    </div>
+
+    <!-- history -->
+    <div class="sp-sec">
+      <div class="sp-sec-lbl">
+        Recent History
+        <span class="sp-badge" id="hist-cnt">0</span>
+        <button class="sp-sec-act sp-danger" id="sp-clr-hist">Clear</button>
+      </div>
+      <div id="sp-hist" class="sp-list"></div>
+    </div>
+
+    <!-- keyboard shortcuts -->
+    <div class="sp-sec">
+      <div class="sp-sec-lbl">Keyboard Shortcuts</div>
+      <div class="sp-sc-grid">
+        <div class="sc-r"><span>Back</span><div class="sc-keys"><kbd>Alt</kbd><kbd>←</kbd></div></div>
+        <div class="sc-r"><span>Forward</span><div class="sc-keys"><kbd>Alt</kbd><kbd>→</kbd></div></div>
+        <div class="sc-r"><span>Reload</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>R</kbd></div></div>
+        <div class="sc-r"><span>Home</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>H</kbd></div></div>
+        <div class="sc-r"><span>Focus URL bar</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>L</kbd></div></div>
+        <div class="sc-r"><span>Bookmark page</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>D</kbd></div></div>
+        <div class="sc-r"><span>Settings</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>,</kbd></div></div>
+        <div class="sc-r"><span>Close / Back</span><div class="sc-keys"><kbd>Esc</kbd></div></div>
+      </div>
+    </div>
+
+    <!-- about -->
+    <div class="sp-sec sp-about-sec">
+      <div class="sp-brand">SOVN Browser</div>
+      <div class="sp-ver-row">
+        <span id="sp-ver-txt">v1.0.0</span>
+        <span class="sp-upd-ok" id="sp-upd-ok">✓ Up to date</span>
+      </div>
+      <button class="sp-gh-btn" id="sp-gh" style="display:none">View on GitHub ↗</button>
+    </div>
+
+  </div>
+</div>
+<div id="sp-bd"></div>
+
+<!-- ── UPDATE TOAST ──────────────────────────── -->
+<div id="upd-toast" role="alert">
+  <div class="ut-icon" data-icon="update"></div>
+  <div class="ut-body">
+    <div class="ut-title">Update Available</div>
+    <div class="ut-sub" id="ut-sub">A new version is ready</div>
+  </div>
+  <button id="ut-get">Update Now</button>
+  <button id="ut-x" aria-label="Dismiss">×</button>
+</div>
+
+<!-- ── OFFLINE SCREEN ───────────────────────── -->
+<div id="offline">
+  <div id="off-bar">
+    <div class="o-dot"></div>
+    <span data-icon="wifi"></span>
+    <span>No Internet Connection</span>
+    <span class="o-retry" id="btn-retry">
+      <span data-icon="reload"></span> Retry
+    </span>
+  </div>
+  <canvas id="gc" tabindex="0"></canvas>
+</div>
+
+<!-- ── HOME PAGE ─────────────────────────────── -->
+<div id="home">
+  <div class="hero">
+    <div class="hero-name" id="heroName">SOVN</div>
+    <div class="hero-tag">Your Browser · Your Rules</div>
+    <form class="h-search" id="searchForm">
+      <span data-icon="search"></span>
+      <input name="q" id="heroQ" placeholder="Search or enter a URL…" autocomplete="off">
+      <button type="submit" data-icon="go"></button>
+    </form>
+  </div>
+  <div class="body" id="sitesBody"></div>
+</div>
+
+<script>SOVN_APP_PLACEHOLDER</script>
+</body>
+</html>

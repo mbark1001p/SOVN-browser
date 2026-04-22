@@ -1,0 +1,38 @@
+# Build output
+dist/
+build/
+*.spec
+
+# Installer output
+installer/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.eggs/
+*.egg
+venv/
+.venv/
+env/
+.env/
+
+# User data
+.sovn/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Logs
+*.log
