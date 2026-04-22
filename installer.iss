@@ -65,9 +65,9 @@ english.FinishedHeadingLabel=SOVN is ready!
 english.FinishedLabel=Installation complete. Click Finish to launch SOVN Browser.
 
 [Tasks]
-Name: "desktopicon";   Description: "Create a &desktop shortcut";             GroupDescription: "Shortcuts:";        Flags: checked
-Name: "startmenuicon"; Description: "Create a &Start Menu shortcut";          GroupDescription: "Shortcuts:";        Flags: checked
-Name: "startup";       Description: "Launch SOVN automatically at &startup";  GroupDescription: "Windows startup:";  Flags: unchecked
+Name: "desktopicon";   Description: "Create a &desktop shortcut";    GroupDescription: "Shortcuts:"
+Name: "startmenuicon"; Description: "Create a &Start Menu shortcut"; GroupDescription: "Shortcuts:"
+Name: "startup";       Description: "Launch SOVN at &startup";       GroupDescription: "Windows startup:"; Flags: unchecked
 
 [Files]
 Source: "dist\SOVN\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
