@@ -3,8 +3,48 @@
   --bg:#0d1b2a;--bg2:#112240;--bg3:#1a2f4a;--bg4:#0a1628;
   --c1:#1e90ff;--c2:#00bfff;--cg:rgba(30,144,255,.12);
   --txt:#e8f4fd;--txt2:#8ab4d4;--bdr:rgba(30,144,255,.2);
-  --r:10px;--bar-h:48px;--sp-w:310px;
+  --r:10px;--tab-h:36px;--bar-h:48px;--tot-h:84px;--sp-w:310px;
 }
+
+/* ── TAB STRIP ───────────────────────────────────────── */
+#tab-strip{
+  position:fixed;top:0;left:0;right:0;z-index:9001;
+  height:var(--tab-h);display:flex;align-items:center;
+  background:rgba(8,15,28,.98);border-bottom:1px solid rgba(30,144,255,.15);
+  padding:0 6px;gap:2px;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-ms-overflow-style:none}
+#tab-strip::-webkit-scrollbar{display:none}
+.ts-tab{
+  display:flex;align-items:center;gap:5px;
+  height:26px;padding:0 8px 0 7px;
+  border-radius:7px 7px 0 0;cursor:pointer;
+  max-width:190px;min-width:80px;flex-shrink:0;
+  user-select:none;transition:background .15s,border-color .15s;
+  border:1px solid transparent;border-bottom:2px solid transparent;
+  background:transparent;position:relative}
+.ts-tab:hover{background:rgba(30,144,255,.08)}
+.ts-tab.ts-active{
+  background:rgba(30,144,255,.14);
+  border-color:rgba(30,144,255,.28);
+  border-bottom-color:var(--c1)}
+.ts-fav{width:14px;height:14px;border-radius:3px;flex-shrink:0;object-fit:contain}
+.ts-title{
+  font-size:12px;font-weight:400;color:var(--txt2);
+  flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ts-tab.ts-active .ts-title{color:var(--txt);font-weight:600}
+.ts-cls{
+  background:none;border:none;cursor:pointer;
+  color:var(--txt2);opacity:0;display:flex;align-items:center;
+  padding:2px;border-radius:4px;transition:opacity .15s,background .15s,color .15s;
+  flex-shrink:0}
+.ts-tab:hover .ts-cls,.ts-tab.ts-active .ts-cls{opacity:1}
+.ts-cls:hover{background:rgba(255,80,80,.2);color:#ff6b6b}
+.ts-add{
+  background:none;border:none;cursor:pointer;color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:7px;flex-shrink:0;
+  transition:background .15s,color .15s}
+.ts-add:hover{background:var(--cg);color:var(--c1)}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt);
   font-family:'Segoe UI',system-ui,sans-serif;font-size:14px}
 
@@ -36,7 +76,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt);
   animation:spPulse 1.5s ease-in-out infinite}
 
 /* ── PROGRESS BAR ────────────────────────────────────── */
-#prog{position:fixed;top:var(--bar-h);left:0;height:3px;width:0;z-index:9001;
+#prog{position:fixed;top:var(--tot-h);left:0;height:3px;width:0;z-index:9001;
   background:linear-gradient(90deg,var(--c1),var(--c2),var(--c1));
   background-size:200% 100%;
   border-radius:0 2px 2px 0;opacity:0;
@@ -44,7 +84,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt);
   transition:width .4s cubic-bezier(.1,.7,.1,1),opacity .3s}
 
 /* ── TOOLBAR ─────────────────────────────────────────── */
-#bar{position:fixed;top:0;left:0;right:0;z-index:9000;height:var(--bar-h);
+#bar{position:fixed;top:var(--tab-h);left:0;right:0;z-index:9000;height:var(--bar-h);
   display:flex;align-items:center;gap:3px;padding:0 8px;
   background:rgba(13,27,42,.97);border-bottom:1px solid var(--bdr);
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
@@ -229,7 +269,7 @@ kbd{background:var(--bg3);border:1px solid var(--bdr);border-radius:5px;
 #ut-x:hover{color:var(--txt)}
 
 /* ── HOME ────────────────────────────────────────────── */
-#home{position:fixed;inset:0;top:var(--bar-h);z-index:10;
+#home{position:fixed;inset:0;top:var(--tot-h);z-index:10;
   display:none;overflow-y:auto;background:var(--bg)}
 #home.on{display:block}
 .hero{display:flex;flex-direction:column;align-items:center;

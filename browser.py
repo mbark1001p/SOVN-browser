@@ -1,7 +1,7 @@
-import sys, webview, json, time, urllib.request, urllib.error
+import sys, webview, json, time, urllib.request, urllib.error, uuid
 from pathlib import Path
 
-VERSION     = "1.0.1"
+VERSION     = "1.0.2"
 GITHUB_REPO = "mbark1001p/SOVN-browser"
 ICON        = "icon.ico"
 
@@ -13,6 +13,9 @@ BM_FILE   = DATA_DIR / "bookmarks.json"
 HIST_FILE = DATA_DIR / "history.json"
 PROF_FILE = DATA_DIR / "profiles.json"
 PID_FILE  = DATA_DIR / "pid.txt"
+
+_tabs = []
+_atid = None
 
 def _load(path):
     try:
@@ -113,6 +116,43 @@ class API:
             DATA_DIR.mkdir(parents=True, exist_ok=True)
             PID_FILE.write_text(str(pid or ""), "utf-8")
         except: pass
+
+    # ── tabs ────────────────────────────────────────────
+    def get_tabs(self):
+        return {'tabs': list(_tabs), 'active': _atid}
+
+    def new_tab(self, url='', title='New Tab'):
+        global _atid
+        tid = 'st_' + uuid.uuid4().hex[:8]
+        _tabs.append({'id': tid, 'url': url or '', 'title': title or 'New Tab'})
+        _atid = tid
+        return tid
+
+    def close_tab(self, tid):
+        global _tabs, _atid
+        idx = next((i for i, t in enumerate(_tabs) if t['id'] == tid), -1)
+        if idx == -1: return ''
+        _tabs.pop(idx)
+        if not _tabs:
+            _atid = None
+            return '__home__'
+        nxt = _tabs[min(idx, len(_tabs) - 1)]
+        _atid = nxt['id']
+        return nxt['url'] or '__home__'
+
+    def switch_tab(self, tid):
+        global _atid
+        tab = next((t for t in _tabs if t['id'] == tid), None)
+        if not tab: return ''
+        _atid = tid
+        return tab['url'] or ''
+
+    def update_tab(self, tid, url, title):
+        for t in _tabs:
+            if t['id'] == tid:
+                if url:   t['url']   = url
+                if title: t['title'] = title
+                break
 
     # ── update check ────────────────────────────────────
     def check_update(self) -> dict:

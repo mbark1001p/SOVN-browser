@@ -701,6 +701,8 @@ function setupKeys() {
     if (e.ctrlKey && e.key === 'r')          { e.preventDefault(); doReload(); return; }
     if (e.key === 'F5')                      { e.preventDefault(); doReload(); return; }
     if (e.ctrlKey && e.key === 'h')          { e.preventDefault(); goHome(); return; }
+    if (e.ctrlKey && e.key === 't')          { e.preventDefault(); tabNewTab(); return; }
+    if (e.ctrlKey && e.key === 'w')          { e.preventDefault(); tabCloseActive(); return; }
     if (e.ctrlKey && e.key === 'd')          { e.preventDefault(); bmToggle(); return; }
     if (e.ctrlKey && e.key === ',')          {
       e.preventDefault();
@@ -720,6 +722,92 @@ function setupKeys() {
       document.getElementById('uBar').blur();
     }
   });
+}
+
+/* ── TABS ─────────────────────────────────────────────────── */
+const TAB_CLOSE_SVG = `<svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
+const TAB_PLUS_SVG  = `<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
+
+function favUrl(url) {
+  try { return `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=16`; }
+  catch { return ''; }
+}
+
+async function renderTabStrip() {
+  const strip = document.getElementById('tab-strip');
+  if (!strip) return;
+  const api = window.pywebview?.api;
+  if (!api?.get_tabs) { strip.innerHTML = ''; return; }
+
+  const data = await api.get_tabs();
+  const tabs  = data.tabs  || [];
+  const active = data.active;
+  strip.innerHTML = '';
+
+  tabs.forEach(tab => {
+    const el = document.createElement('div');
+    el.className = 'ts-tab' + (tab.id === active ? ' ts-active' : '');
+
+    const fav = favUrl(tab.url);
+    if (fav) {
+      const img = document.createElement('img');
+      img.src = fav; img.className = 'ts-fav';
+      img.onerror = () => img.remove();
+      el.appendChild(img);
+    }
+
+    const ttl = document.createElement('span');
+    ttl.className = 'ts-title';
+    ttl.textContent = tab.title || tab.url || 'New Tab';
+    el.appendChild(ttl);
+
+    const cls = document.createElement('button');
+    cls.className = 'ts-cls'; cls.innerHTML = TAB_CLOSE_SVG;
+    cls.onclick = async e => {
+      e.stopPropagation();
+      const nextUrl = await api.close_tab(tab.id);
+      if (!nextUrl || nextUrl === '__home__') { window.name = ''; goHome(); }
+      else { window.name = (await api.get_tabs()).active || ''; nav(nextUrl); }
+    };
+    el.appendChild(cls);
+
+    el.addEventListener('click', async () => {
+      if (tab.id === active) return;
+      const url = await api.switch_tab(tab.id);
+      window.name = tab.id;
+      if (!url || url === '__home__') goHome();
+      else nav(url);
+    });
+
+    strip.appendChild(el);
+  });
+
+  const addBtn = document.createElement('button');
+  addBtn.className = 'ts-add'; addBtn.innerHTML = TAB_PLUS_SVG; addBtn.title = 'New Tab (Ctrl+T)';
+  addBtn.onclick = async () => {
+    const newId = await api.new_tab('', 'New Tab');
+    window.name = newId;
+    goHome();
+  };
+  strip.appendChild(addBtn);
+}
+
+async function tabNewTab() {
+  const api = window.pywebview?.api;
+  if (!api?.new_tab) return;
+  const newId = await api.new_tab('', 'New Tab');
+  window.name = newId;
+  goHome();
+}
+
+async function tabCloseActive() {
+  const api = window.pywebview?.api;
+  if (!api?.get_tabs) return;
+  const data = await api.get_tabs();
+  if (!data.active) return;
+  const nextUrl = await api.close_tab(data.active);
+  if (!nextUrl || nextUrl === '__home__') { window.name = ''; goHome(); }
+  else { window.name = (await api.get_tabs()).active || ''; nav(nextUrl); }
 }
 
 /* ── INIT ─────────────────────────────────────────────────── */
@@ -777,6 +865,7 @@ function setupKeys() {
 
   scheduleUpdateChecks();
   setupKeys();
+  setTimeout(renderTabStrip, 400);
 
   /* URL bar */
   const uBar = document.getElementById('uBar');
