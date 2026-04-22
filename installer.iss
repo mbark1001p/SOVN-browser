@@ -1,5 +1,5 @@
 #define AppName      "SOVN Browser"
-#define AppVersion   "1.0.0"
+#define AppVersion   "1.0.1"
 #define AppPublisher "SOVN"
 #define AppExe       "SOVN.exe"
 #define AppURL       "https://github.com/"

@@ -655,17 +655,27 @@ function hideUpdateToast(dismiss, version) {
 }
 
 async function checkUpdate() {
-  if (!REPO) return;
   try {
+    // prefer Python API (bypasses CORS on data: pages)
+    const api = window.pywebview?.api;
+    if (api?.check_update) {
+      const res = await api.check_update();
+      if (res?.update && res.latest) {
+        const dlUrl = res.url || `https://github.com/${REPO}/releases/latest`;
+        showUpdateToast(res.latest, dlUrl);
+      }
+      return;
+    }
+    // fallback: fetch (works on external pages)
+    if (!REPO) return;
     const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`,
       { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' });
     if (!r.ok) return;
     const data = await r.json();
     const latest = (data.tag_name || '').replace(/^v/i, '').trim();
-    if (!latest) return;
-    if (semverGt(latest, VER)) {
-      const releaseUrl = data.html_url || `https://github.com/${REPO}/releases/latest`;
-      showUpdateToast(latest, releaseUrl);
+    if (latest && semverGt(latest, VER)) {
+      const dlUrl = (data.assets?.[0]?.browser_download_url) || data.html_url || `https://github.com/${REPO}/releases/latest`;
+      showUpdateToast(latest, dlUrl);
     }
   } catch { /* silent */ }
 }

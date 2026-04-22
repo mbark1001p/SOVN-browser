@@ -1,7 +1,7 @@
-import sys, webview, json, time
+import sys, webview, json, time, urllib.request, urllib.error
 from pathlib import Path
 
-VERSION     = "1.0.0"
+VERSION     = "1.0.1"
 GITHUB_REPO = "mbark1001p/SOVN-browser"
 ICON        = "icon.ico"
 
@@ -113,6 +113,19 @@ class API:
             DATA_DIR.mkdir(parents=True, exist_ok=True)
             PID_FILE.write_text(str(pid or ""), "utf-8")
         except: pass
+
+    # ── update check ────────────────────────────────────
+    def check_update(self) -> dict:
+        try:
+            url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+            req = urllib.request.Request(url, headers={"User-Agent": "SOVN-Browser"})
+            with urllib.request.urlopen(req, timeout=6) as r:
+                data = json.loads(r.read())
+            latest = data.get("tag_name", "").lstrip("v")
+            dl     = data.get("assets", [{}])[0].get("browser_download_url", "") if data.get("assets") else ""
+            return {"latest": latest, "current": VERSION, "update": latest != VERSION and bool(latest), "url": dl}
+        except:
+            return {"latest": "", "current": VERSION, "update": False, "url": ""}
 
 
 if __name__ == "__main__":
